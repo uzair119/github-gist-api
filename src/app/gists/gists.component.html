@@ -1,0 +1,75 @@
+<nz-layout>
+    <nz-header>
+    </nz-header>
+    <nz-content>
+        <br>
+        <br>
+        <div class="inner-content">
+            <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
+                <input #search (keyup.enter)="getGists(search.value)" type="text" nz-input
+                    placeholder="enter github username" />
+            </nz-input-group>
+            <ng-template #suffixIconButton>
+                <button nz-button nzType="primary" nzSearch><i nz-icon nzType="search"></i></button>
+            </ng-template>
+            <h3 *ngIf="username" [ngStyle]="{ margin: '16px 0' }">Viewing gists for {{username}}</h3>
+            <ul nz-list [nzDataSource]="gists" nzBordered nzSize="large">
+                <li nz-list-item *ngFor="let item of gists">
+                    <ul nz-list-item-actions>
+                        <nz-list-item-action *ngFor="let file of item.files  | keyvalue">
+                            <nz-tag *ngIf="file.value.language == 'JavaScript'" [nzColor]="'magenta'">JavaScript
+                            </nz-tag>
+                            <nz-tag *ngIf="file.value.language == 'Ruby'" [nzColor]="'red'">Ruby</nz-tag>
+                            <nz-tag *ngIf="file.value.language == 'Java'" [nzColor]="'volcano'">Java</nz-tag>
+                            <nz-tag *ngIf="file.value.language == 'Markdown'" [nzColor]="'orange'">Markdown</nz-tag>
+                            <nz-tag *ngIf="file.value.language == 'HTML'" [nzColor]="'gold'">HTML</nz-tag>
+                            <nz-tag *ngIf="file.value.language == 'C++'" [nzColor]="'lime'">C++</nz-tag>
+                            <nz-tag *ngIf="file.value.language == 'Python'" [nzColor]="'green'">Python</nz-tag>
+                            <nz-tag *ngIf="file.value.language == 'PHP'" [nzColor]="'purple'">PHP</nz-tag>
+                            <nz-tag *ngIf="file.value.language == 'Text'" [nzColor]="'geekblue'">Text</nz-tag>
+                            <nz-tag *ngIf="file.value.language == 'JSON'" [nzColor]="'blue'">JSON</nz-tag>
+                        </nz-list-item-action>
+                        <nz-list-item-action>
+                            <a (click)="viewGistDetails(item)">View Details</a>
+                        </nz-list-item-action>
+                    </ul>
+                    {{ item.description ? item.description : 'No description provided' }}
+                </li>
+            </ul>
+
+
+
+
+
+
+
+        </div>
+    </nz-content>
+    <nz-footer>Ant Design ©2020 Implement By Angular</nz-footer>
+</nz-layout>
+
+<nz-modal nzWidth="75%" [(nzVisible)]="isVisible" nzTitle="Gist Details" (nzOnCancel)="handleCancel()"
+    (nzOnOk)="handleOk()">
+    <ng-container *nzModalContent>
+        <nz-descriptions [nzColumn]="2" nzBordered nzTitle="Gist Details">
+            <nz-descriptions-item nzTitle="Description">{{gistData.description ? gistData.description : 'No description
+                provided'}}</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="Last 3 forks usernames">{{gistData.lastThreeForks ? gistData.lastThreeForks :
+                'No forks'}}</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="Files">
+                <ul nz-list>
+                    <li nz-list-item *ngFor="let file of gistData.files  | keyvalue">
+                        <a (click)="viewFileContent(file.value)">{{file.value.filename}}</a>
+                    </li>
+                </ul>
+            </nz-descriptions-item>
+        </nz-descriptions>
+    </ng-container>
+</nz-modal>
+
+<nz-modal nzWidth="75%" [(nzVisible)]="isFileModalVisible" nzTitle="File Content" (nzOnCancel)="handleFileModalOk()"
+    (nzOnOk)="handleFileModalOk()">
+    <ng-container *nzModalContent>
+        <p>{{fileContent}}</p>
+    </ng-container>
+</nz-modal>
